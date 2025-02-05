@@ -101,11 +101,13 @@ def replace_chars(s):
     return s.replace('−', '-').replace('–', '-').strip()
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python check_gaussian.py <directory>")
+    # Set default directory to current working directory
+    if len(sys.argv) > 2:
+        print("Usage: python check_gaussian.py [directory]")
         sys.exit(1)
     
-    directory = sys.argv[1]
+    directory = sys.argv[1] if len(sys.argv) == 2 else os.getcwd()
+
     if not os.path.isdir(directory):
         print(f"Error: {directory} is not a valid directory.")
         sys.exit(1)
@@ -119,9 +121,8 @@ def main():
     for filename in files:
         filepath = os.path.join(directory, filename)
         issues = check_gaussian_file(filepath)
-        base_name = os.path.splitext(filename)[0]  # Correctly remove extension
+        base_name = os.path.splitext(filename)[0]
         
-        # Store both base name and status
         status = {
             'termination': 'termination problem' in issues,
             'convergence': 'convergence problem' in issues,
@@ -134,12 +135,13 @@ def main():
     header = f"{'Filename':<{max_name_len}}  {'Termination':<12}  {'Convergence':<12}  {'Frequency':<12}"
     separator = "-" * (max_name_len + 12*3 + 6)
     
-    print("\n" + header)
+    print(f"\nChecking files in: {directory}")
+    print(header)
     print(separator)
     
-    for base_name, status in results:  # Fix 1: Use base_name from results tuple
+    for base_name, status in results:
         line = (
-            f"{base_name:<{max_name_len}}  "  # Fix 2: Use base_name variable here
+            f"{base_name:<{max_name_len}}  "
             f"{'FAIL' if status['termination'] else 'OK':<12}  "
             f"{'FAIL' if status['convergence'] else 'OK':<12}  "
             f"{'FAIL' if status['frequency'] else 'OK':<12}"
