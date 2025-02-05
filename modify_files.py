@@ -6,18 +6,20 @@ import os
 import sys
 from pathlib import Path
 
-# Check if a directory argument is provided
+# Determine the working directory
 if len(sys.argv) > 1:
-    directory = Path(sys.argv[1]).resolve()
+    directory = Path(sys.argv[1]).resolve()  # Use the provided directory
 else:
-    directory = Path(__file__).parent  # Default to the script's directory
+    directory = Path.cwd()  # Default to the directory where the user runs the script
 
 output_directory = directory  # Set output to the same directory by default
 
 # Dictionary of replacements
 replacements = {
-    '%nprocshared=32': '%nprocshared=120',
-    '%mem=20GB': '%mem=40GB'
+    '%nprocshared=32': '%nprocshared=128',
+    '%mem=20GB': '%mem=50GB',
+    'F03': 'F05',
+    '#p gfprint gfinput freq m11/lanl2dz nosymm': '#p gfprint gfinput freq m11/def2tzvp nosymm'
 }
 
 # Ensure the directory exists
